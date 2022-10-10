@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/fly-studio/envsubst/common"
 	"github.com/fly-studio/envsubst/parse"
 	"github.com/spf13/cobra"
 	"io"
@@ -65,7 +66,7 @@ of the environment variables that are referenced in SHELL-FORMAT, one per line.`
 func envsubst(options envOptions) error {
 
 	var envKeys []string
-	envKeys = EnvKeys(options.shellFormat)
+	envKeys = common.EnvKeys(options.shellFormat)
 
 	// 只显示变量名
 	if options.showVariables {
@@ -81,7 +82,7 @@ func envsubst(options envOptions) error {
 		envKeys = append(envKeys, "EMPTY_STRING")
 	}
 
-	customEnv := GetEnvMap(envKeys)
+	customEnv := common.GetEnvMap(envKeys)
 	restrictions := &parse.Restrictions{
 		ErrorOnUnset: options.unsetFatal,
 		ErrorOnEmpty: options.emptyFatal,
@@ -98,7 +99,7 @@ func envsubst(options envOptions) error {
 				outFile = segments[1]
 			}
 
-			if err := EnvSubstituteFile(inFile, outFile, customEnv, restrictions); err != nil {
+			if err := common.EnvSubstituteFile(inFile, outFile, customEnv, restrictions); err != nil {
 				return err
 			}
 			fmt.Printf(" - \"%s\" to \"%s\"\n", inFile, outFile)
@@ -107,6 +108,7 @@ func envsubst(options envOptions) error {
 	} else {
 		stat, err := os.Stdin.Stat()
 		if err != nil || (stat.Mode()&os.ModeCharDevice) != 0 {
+
 			return fmt.Errorf("must input a valid file or content, \"envsubst < 1.txt\"")
 		}
 		content, err := io.ReadAll(bufio.NewReader(os.Stdin))
@@ -114,7 +116,7 @@ func envsubst(options envOptions) error {
 			return err
 		}
 
-		out, err := EnvSubstitute(string(content), customEnv, restrictions)
+		out, err := common.EnvSubstitute(string(content), customEnv, restrictions)
 		if err != nil {
 			return err
 		}
