@@ -19,7 +19,7 @@ const (
 type Restrictions struct {
 	ErrorOnUnset bool
 	ErrorOnEmpty bool
-	KeepUnset    bool
+	ReplaceUnset bool
 }
 
 // Restrictions specifier

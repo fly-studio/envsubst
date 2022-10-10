@@ -57,7 +57,7 @@ func (t *VariableNode) String() (string, error) {
 	if err := t.validateNoUnset(); err != nil {
 		return "", err
 	}
-	if !t.isSet() && t.Restrict.KeepUnset {
+	if !t.isSet() && !t.Restrict.ReplaceUnset {
 		return t.Raw, nil
 	}
 	value := t.GetValue()

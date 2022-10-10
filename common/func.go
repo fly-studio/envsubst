@@ -38,7 +38,6 @@ func GetEnvMap(envKeys []string) map[string]string {
 func EnvSubstitute(content string, customEnv map[string]string, restrictions *parse.Restrictions) (string, error) {
 	envLine := os.Environ()
 	if len(customEnv) > 0 {
-		restrictions.KeepUnset = true
 		envLine = EnvToStrings(customEnv)
 	}
 	return parse.New("string", envLine, restrictions).Parse(content)
